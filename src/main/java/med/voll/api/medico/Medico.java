@@ -22,6 +22,7 @@ public class Medico {
     private Long id;
     private String nome;
     private String email;
+    private String telefone;
     private String crm;
     @Enumerated(EnumType.STRING)//Anotação JPA para digitar a especialidade conforme cadastrado ENUM em medico/Especialidade
     private Especialidade especialidade;
@@ -31,6 +32,7 @@ public class Medico {
     public Medico(DadosCadastroMedicos dadosMedicos) {
         this.nome = dadosMedicos.nome();
         this.email = dadosMedicos.email();
+        this.telefone = dadosMedicos.telefone();
         this.crm = dadosMedicos.crm();
         this.especialidade = dadosMedicos.especialidade();
         this.endereco = new Endereco(dadosMedicos.endereco());

@@ -28,6 +28,7 @@ public class Paciente {
     @Embedded
     private Endereco endereco;
 
+    //teste
     public Paciente(DadosCadastroPacientes dadosPacientes) {
         this.nome = dadosPacientes.nome();
         this.cpf = dadosPacientes.cpf();
