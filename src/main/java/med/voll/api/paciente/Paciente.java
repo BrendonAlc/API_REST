@@ -28,6 +28,7 @@ public class Paciente {
     @Embedded
     private Endereco endereco;
     private Boolean ativo;
+    private String telefone;
 
     //teste
     public Paciente(DadosCadastroPacientes dadosPacientes) {
@@ -36,6 +37,7 @@ public class Paciente {
         this.dataNascimento = new Date();
         this.email = dadosPacientes.email();
         this.endereco = new Endereco(dadosPacientes.endereco());
+        this.telefone = dadosPacientes.telefone();
     }
 
     public void AtualizarInformacoes(DadosAtualizacaoPaciente dadosPaciente) {
@@ -53,4 +55,5 @@ public class Paciente {
     public void excluir() {
         this.ativo = false;
     }
+
 }

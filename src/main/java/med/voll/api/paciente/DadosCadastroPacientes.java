@@ -20,7 +20,11 @@ public record DadosCadastroPacientes(
         @NotBlank
         @Email
         String email,
+        @NotBlank
+        String telefone,
+
         @NotNull
         @Valid //Para validar outro Objeto como um dos atributos de endereço
         DadosEndereco endereco) {
+
 }
