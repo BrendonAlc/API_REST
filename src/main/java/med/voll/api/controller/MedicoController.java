@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -20,31 +22,40 @@ public class MedicoController {
     private MedicoRepository repository;
     @PostMapping
     @Transactional //método de escrita que consiste em um insert no banco de dados
-   public void cadastrar(@RequestBody @Valid DadosCadastroMedicos dadosMedicos) { //Utilizando @RequestBody para enviar para o corpo do json
-        repository.save(new Medico(dadosMedicos));
+   public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroMedicos dadosMedicos, UriComponentsBuilder uribuilder) { //Utilizando @RequestBody para enviar para o corpo do json
+        var medico = new Medico(dadosMedicos);
+        repository.save(medico);
+
+        //utilizando método para criar uri para informar em corpo location, e informar no corpo a representação da requisição 201
+        var uri = uribuilder.path("medicos/{id}").buildAndExpand(medico.getId()).toUri();
+        return ResponseEntity.created(uri).body(new DadosDetalhamentoMedico(medico));
     }
 
     @GetMapping
     //Listar por paginação dados de medicos, limitando a 10 registros por página e ordenando por nome
-    public Page<DadosListagemMedico> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) { //Pageable para realizar páginação quando realizar requisição de listar
-        return repository.findAllByAtivoTrue(paginacao).map(DadosListagemMedico::new);
+    public ResponseEntity<Page<DadosListagemMedico>> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) { //Pageable para realizar páginação quando realizar requisição de listar
+        var page = repository.findAllByAtivoTrue(paginacao).map(DadosListagemMedico::new);
+        return ResponseEntity.ok(page);
     }
 
     @PutMapping
     @Transactional
     //Atualizar informações
-    public void atualizar(@RequestBody @Valid DadosAtualizacaoMedico dadosMedico){
+    public ResponseEntity atualizar(@RequestBody @Valid DadosAtualizacaoMedico dadosMedico){
 
         var medico = repository.getReferenceById(dadosMedico.id());
         medico.AtualizarInformacoes(dadosMedico);
+
+        return ResponseEntity.ok(new DadosDetalhamentoMedico(medico));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public void excluir(@PathVariable Long id){
+    public ResponseEntity excluir(@PathVariable Long id){
        // repository.deleteById(id); //código para apagar do banco de dados
         var medico = repository.getReferenceById(id);
         medico.excluir();
-    }
 
+        return ResponseEntity.noContent().build();
+    }
 }
