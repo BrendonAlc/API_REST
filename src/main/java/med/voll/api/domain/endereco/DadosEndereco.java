@@ -6,16 +6,17 @@ import jakarta.validation.constraints.Pattern;
 import org.aspectj.weaver.ast.Not;
 
 public record DadosEndereco(
-        @NotBlank
+        @NotBlank (message = "{logradouro.obrigatorio}")
         String logradouro,
-        @NotBlank
+        @NotBlank (message = "{bairro.obrigatorio}")
         String bairro,
-        @NotBlank
-        @Pattern(regexp = "\\d{8}")
+        @NotBlank (message = "{cep.obrigatorio}")
+        @Pattern(regexp = "\\d{8}", message = "{cep.invalido}")
         String cep,
-        @NotBlank
+        @NotBlank (message = "{cidade.obrigatorio}")
         String cidade,
-        @NotBlank
+        @NotBlank (message = "{uf.obrigatorio}")
+        @Pattern(regexp = "^[A-Z]{2}$", message = "{uf.invalido}")
         String uf,
 
         Integer numero,
